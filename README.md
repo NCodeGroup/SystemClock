@@ -1,3 +1,21 @@
+# Deprecated
+
+> **This library is retired. Use `System.TimeProvider`, which has been built into .NET since .NET 8.**
+>
+> - `ISystemClock.UtcNow` becomes `TimeProvider.GetUtcNow()`. Take a `TimeProvider` in your constructor, pass `TimeProvider.System` in production, and use `Microsoft.Extensions.TimeProvider.Testing`'s `FakeTimeProvider` in tests.
+> - Applications on .NET Framework 4.6.2 or .NET Standard 2.0 can use the `Microsoft.Bcl.TimeProvider` package, which backports the type.
+> - `SystemClockSecondsAccuracy` (whole seconds, for JWT `expires_in`) becomes a small extension on `TimeProvider`:
+>
+> ```csharp
+> public static DateTimeOffset GetUtcNowWithPrecisionInSeconds(this TimeProvider provider)
+> {
+>     var now = provider.GetUtcNow();
+>     return DateTimeOffset.FromUnixTimeSeconds(now.ToUnixTimeSeconds());
+> }
+> ```
+>
+> The NuGet package `NCode.SystemClock` is deprecated and this repository is archived. The code stays available as it is.
+
 # Overview
 
 [![ci](https://github.com/NCodeGroup/SystemClock/actions/workflows/main.yml/badge.svg)](https://github.com/NCodeGroup/SystemClock/actions)
