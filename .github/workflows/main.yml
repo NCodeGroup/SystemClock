@@ -18,9 +18,9 @@ env:
 
 jobs:
   build:
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v6
     - name: Extract version from tag
       uses: dhkatz/get-version-action@v3.0.0
       id: extract_version
@@ -31,7 +31,7 @@ jobs:
       env:
         BUILD_VERSION: ${{ steps.extract_version.outputs.is-semver == 'true' && steps.extract_version.outputs.version-without-v || '0.0.0' }}
     - name: Upload artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v6
       with:
         name: binaries
         path: |
@@ -42,11 +42,11 @@ jobs:
 
   test:
     needs: [build]
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - name: Download artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v7
         with:
           name: binaries
       - name: Restore dependencies
@@ -54,7 +54,7 @@ jobs:
       - name: Run rests
         run: dotnet test --no-build --verbosity normal --configuration ${Env:BUILD_CONFIGURATION} --logger trx
       - name: Publish tests
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@v2
         if: success() || failure()
         with:
           name: test report
@@ -66,9 +66,9 @@ jobs:
     needs: [test]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - name: Download artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v7
         with:
           name: binaries
       - name: Upload release artifacts
@@ -76,7 +76,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 6.0.x
       - name: Publish NuGet package
